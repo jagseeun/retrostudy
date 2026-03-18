@@ -48,12 +48,15 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [feedback, setFeedback] = useState(initialRetro?.feedback ?? '')
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(!!initialRetro?.feedback)
   const [error, setError] = useState<string | null>(null)
-  const [userTyped, setUserTyped] = useState(!!initialRetro?.feedback)
+  const [userTyped, setUserTyped] = useState(false)
+  // 저장 후 잠금 모드 (수정하기 버튼으로 해제)
+  const [viewMode, setViewMode] = useState(!!initialRetro)
+
+  const canEdit = isEditable && !viewMode
 
   const toggleItem = async (item: DailyCheckItem) => {
-    if (!isEditable || togglingId) return
+    if (!canEdit || togglingId) return
     setTogglingId(item.id)
     setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)))
     try {
@@ -79,7 +82,6 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
     if (userTyped && !confirm('현재 작성 내용이 사라집니다. 계속할까요?')) return
     setFeedback(value)
     setUserTyped(false)
-    setSaved(false)
   }
 
   const handleSave = async () => {
@@ -96,7 +98,7 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
         setError(body.error ?? '저장에 실패했어요')
         return
       }
-      setSaved(true)
+      setViewMode(true)
     } catch {
       setError('네트워크 오류가 발생했어요')
     } finally {
@@ -143,19 +145,19 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
                 key={item.id}
                 type="button"
                 onClick={() => toggleItem(item)}
-                disabled={!isEditable || !!togglingId}
+                disabled={!canEdit || !!togglingId}
                 initial={{ opacity: 0, x: 20, scale: 0.96 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 22, delay: i * 0.06 }}
-                whileTap={isEditable ? { scale: 0.98 } : {}}
+                whileTap={canEdit ? { scale: 0.98 } : {}}
                 className={cn(
                   'flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border shadow-sm text-left transition-all w-full',
                   item.checked
                     ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/60'
                     : 'bg-white dark:bg-neutral-900 border-neutral-100 dark:border-neutral-800 opacity-70',
-                  isEditable && !item.checked && 'hover:opacity-100 hover:border-neutral-200 dark:hover:border-neutral-700',
-                  isEditable && item.checked && 'hover:border-green-300 dark:hover:border-green-700',
-                  !isEditable && 'cursor-default'
+                  canEdit && !item.checked && 'hover:opacity-100 hover:border-neutral-200 dark:hover:border-neutral-700',
+                  canEdit && item.checked && 'hover:border-green-300 dark:hover:border-green-700',
+                  !canEdit && 'cursor-default'
                 )}
               >
                 <motion.div
@@ -215,7 +217,7 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <p className="text-xs uppercase tracking-widest font-semibold text-neutral-400 dark:text-neutral-500">피드백</p>
-          {isEditable && (
+          {canEdit && (
             <div className="flex gap-1">
               {TEMPLATES.map((t) => (
                 <button
@@ -230,10 +232,10 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
           )}
         </div>
 
-        {isEditable ? (
+        {canEdit ? (
           <Textarea
             value={feedback}
-            onChange={(e) => { setFeedback(e.target.value); setSaved(false); setUserTyped(true) }}
+            onChange={(e) => { setFeedback(e.target.value); setUserTyped(true) }}
             placeholder="오늘 하루 어떠했나요?"
             className="bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-white text-sm resize-none min-h-[180px] leading-relaxed focus-visible:ring-blue-500/50 focus-visible:border-blue-400 placeholder:text-neutral-300 dark:placeholder:text-neutral-600 shadow-sm"
           />
@@ -262,18 +264,22 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
 
       {/* 버튼 */}
       <div className="flex items-center gap-3">
-        {isEditable && (
+        {canEdit && (
           <Button
             onClick={handleSave}
-            disabled={saving || saved}
-            className={cn(
-              'flex-1 h-11 font-semibold text-sm shadow-sm',
-              saved
-                ? 'bg-green-500 hover:bg-green-500 text-white'
-                : 'bg-blue-500 hover:bg-blue-600 text-white'
-            )}
+            disabled={saving}
+            className="flex-1 h-11 font-semibold text-sm shadow-sm bg-blue-500 hover:bg-blue-600 text-white"
           >
-            {saving ? '저장 중...' : saved ? '저장됨' : '회고 저장'}
+            {saving ? '저장 중...' : '회고 저장'}
+          </Button>
+        )}
+        {isEditable && viewMode && (
+          <Button
+            onClick={() => setViewMode(false)}
+            variant="outline"
+            className="flex-1 h-11 font-semibold text-sm border-neutral-200 dark:border-neutral-700"
+          >
+            수정하기
           </Button>
         )}
         <Button
