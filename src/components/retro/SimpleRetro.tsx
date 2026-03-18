@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { Check, Lock, Loader2 } from 'lucide-react'
+import { Check, Lock, Loader2, Clock } from 'lucide-react'
 import type { DailyCheckItem, DailyRetro } from '@/lib/types/app.types'
 
 interface SimpleRetroProps {
@@ -172,12 +172,20 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
                     <Check size={9} className="text-white" />
                   ) : null}
                 </motion.div>
-                <span className={cn(
-                  'text-sm flex-1 font-medium',
-                  item.checked ? 'text-green-700 dark:text-green-300' : 'text-neutral-500 dark:text-neutral-500'
-                )}>
-                  {item.title}
-                </span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className={cn(
+                    'text-sm font-medium',
+                    item.checked ? 'text-green-700 dark:text-green-300' : 'text-neutral-500 dark:text-neutral-500'
+                  )}>
+                    {item.title}
+                  </span>
+                  {(item.start_time || item.end_time) && (
+                    <span className="flex items-center gap-1 text-xs text-neutral-400 dark:text-neutral-600 mt-0.5">
+                      <Clock size={10} />
+                      {item.start_time?.slice(0, 5)}{item.end_time ? `–${item.end_time.slice(0, 5)}` : ''}
+                    </span>
+                  )}
+                </div>
                 <AnimatePresence>
                   {item.checked && !isToggling && (
                     <motion.span
