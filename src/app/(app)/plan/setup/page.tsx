@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { WeeklySetup } from '@/components/plan/WeeklySetup'
 import { QuickWeeklySetup } from '@/components/plan/QuickWeeklySetup'
@@ -19,7 +21,14 @@ export default function PlanSetupPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
-      <div className="mb-2">
+      <div className="mb-6">
+        <Link
+          href="/plan"
+          className="inline-flex items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors mb-3"
+        >
+          <ChevronLeft size={14} />
+          계획으로 돌아가기
+        </Link>
         <h1 className="text-xl font-bold text-neutral-900 dark:text-white">주간 일정 설정</h1>
       </div>
 
