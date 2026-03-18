@@ -26,27 +26,33 @@ export function RetroDateNav({ date, startDate, today }: RetroDateNavProps) {
   const canGoNext = next <= today
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2 md:gap-4">
       {canGoPrev ? (
         <Link
           href={`/retro/${prev}`}
-          className="p-1.5 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          className="p-2 md:p-3 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
         >
-          <ChevronLeft size={15} />
+          <ChevronLeft size={20} className="md:hidden" />
+          <ChevronLeft size={26} className="hidden md:block" />
         </Link>
       ) : (
-        <span className="p-1.5 text-neutral-200 dark:text-neutral-800 cursor-not-allowed">
-          <ChevronLeft size={15} />
+        <span className="p-2 md:p-3 text-neutral-200 dark:text-neutral-800 cursor-not-allowed">
+          <ChevronLeft size={20} className="md:hidden" />
+          <ChevronLeft size={26} className="hidden md:block" />
         </span>
       )}
 
       {/* 날짜 클릭 → date picker */}
-      <div className="relative flex flex-col items-center min-w-[110px] text-center cursor-pointer">
-        <span className={cn('text-base font-bold tracking-tight pointer-events-none', isToday ? 'text-blue-500' : 'text-neutral-900 dark:text-white')}>
+      <div className="relative flex flex-col items-center min-w-[140px] md:min-w-[180px] text-center cursor-pointer">
+        <span className={cn(
+          'font-bold tracking-tight pointer-events-none',
+          'text-2xl md:text-4xl',
+          isToday ? 'text-blue-500' : 'text-neutral-900 dark:text-white'
+        )}>
           {dayLabel}
         </span>
-        <span className="text-xs text-neutral-400 pointer-events-none">{month}/{day}</span>
-        {isToday && <span className="text-[10px] font-semibold text-blue-500 mt-0.5 pointer-events-none">오늘</span>}
+        <span className="text-sm md:text-base text-neutral-400 pointer-events-none mt-0.5">{month}/{day}</span>
+        {isToday && <span className="text-xs md:text-sm font-semibold text-blue-500 mt-1 pointer-events-none">오늘</span>}
         <input
           type="date"
           value={date}
@@ -60,13 +66,15 @@ export function RetroDateNav({ date, startDate, today }: RetroDateNavProps) {
       {canGoNext ? (
         <Link
           href={`/retro/${next}`}
-          className="p-1.5 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          className="p-2 md:p-3 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
         >
-          <ChevronRight size={15} />
+          <ChevronRight size={20} className="md:hidden" />
+          <ChevronRight size={26} className="hidden md:block" />
         </Link>
       ) : (
-        <span className="p-1.5 text-neutral-200 dark:text-neutral-800 cursor-not-allowed">
-          <ChevronRight size={15} />
+        <span className="p-2 md:p-3 text-neutral-200 dark:text-neutral-800 cursor-not-allowed">
+          <ChevronRight size={20} className="md:hidden" />
+          <ChevronRight size={26} className="hidden md:block" />
         </span>
       )}
     </div>

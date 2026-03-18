@@ -59,15 +59,17 @@ export default async function RetroDatePage({ params }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
       {/* 헤더 */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 mb-8">
         <Link
           href="/retro"
-          className="flex items-center gap-1 text-sm font-medium text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+          className="flex items-center gap-1 text-sm font-medium text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors w-fit"
         >
           <ChevronLeft size={14} />
           회고
         </Link>
-        <RetroDateNav date={date} startDate={startDate} today={today} />
+        <div className="flex justify-center">
+          <RetroDateNav date={date} startDate={startDate} today={today} />
+        </div>
       </div>
 
       <SimpleRetro
