@@ -147,6 +147,42 @@ export interface Database {
         }
         Relationships: []
       }
+      monthly_week_plans: {
+        Row: {
+          id: string
+          user_id: string
+          year: number
+          month: number
+          week_number: number
+          week_start: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          year: number
+          month: number
+          week_number: number
+          week_start: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          year?: number
+          month?: number
+          week_number?: number
+          week_start?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           id: string
