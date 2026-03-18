@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Loader2, Check } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { DAY_FULL_LABELS, sortByTime } from '@/lib/utils/date'
 import type { WeeklyScheduleItem } from '@/lib/types/app.types'
 
@@ -65,9 +66,9 @@ function initTexts(items: WeeklyScheduleItem[]): Record<number, string> {
 }
 
 export function QuickWeeklySetup({ initialItems }: Props) {
+  const router = useRouter()
   const [texts, setTexts] = useState<Record<number, string>>(() => initTexts(initialItems))
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [items, setItems] = useState<WeeklyScheduleItem[]>(initialItems)
 
   const handleSave = async () => {
@@ -103,10 +104,7 @@ export function QuickWeeklySetup({ initialItems }: Props) {
       }
       const newItems = await Promise.all(requests)
       setItems(newItems)
-      // 저장 후 텍스트 정규화 (파싱된 결과로 재포맷)
-      setTexts(initTexts(newItems))
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
+      router.push('/plan')
     } finally {
       setSaving(false)
     }
@@ -127,8 +125,6 @@ export function QuickWeeklySetup({ initialItems }: Props) {
         >
           {saving ? (
             <><Loader2 size={13} className="animate-spin" />저장 중</>
-          ) : saved ? (
-            <><Check size={13} />저장됨</>
           ) : '전체 저장'}
         </Button>
       </div>
@@ -159,20 +155,6 @@ export function QuickWeeklySetup({ initialItems }: Props) {
         )
       })}
 
-      <div className="flex justify-end pt-1">
-        <Button
-          size="sm"
-          onClick={handleSave}
-          disabled={saving}
-          className="h-8 gap-1.5 bg-blue-600 hover:bg-blue-500 text-white"
-        >
-          {saving ? (
-            <><Loader2 size={13} className="animate-spin" />저장 중</>
-          ) : saved ? (
-            <><Check size={13} />저장됨</>
-          ) : '전체 저장'}
-        </Button>
-      </div>
     </div>
   )
 }
