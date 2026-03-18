@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { Check, Lock, Loader2, Clock } from 'lucide-react'
+import { Check, Lock, Loader2, Clock, Copy, CheckCheck } from 'lucide-react'
 import type { DailyCheckItem, DailyRetro } from '@/lib/types/app.types'
 
 interface SimpleRetroProps {
@@ -52,6 +52,28 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
   const [userTyped, setUserTyped] = useState(false)
   // 저장 후 잠금 모드 (수정하기 버튼으로 해제)
   const [viewMode, setViewMode] = useState(!!initialRetro)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    const [year, month, day] = date.split('-')
+    const lines: string[] = []
+    lines.push(`# ${year}년 ${month}월 ${day}일 회고\n`)
+    if (items.length > 0) {
+      lines.push('## 오늘의 학습')
+      items.forEach(item => {
+        const time = item.start_time ? ` (${item.start_time.slice(0,5)}${item.end_time ? `–${item.end_time.slice(0,5)}` : ''})` : ''
+        lines.push(`- [${item.checked ? 'x' : ' '}] ${item.title}${time}`)
+      })
+      lines.push(`\n> 완료율 ${rate}% (${checked}/${total})\n`)
+    }
+    if (feedback) {
+      lines.push('## 회고')
+      lines.push(feedback)
+    }
+    navigator.clipboard.writeText(lines.join('\n'))
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const canEdit = isEditable && !viewMode
 
@@ -280,6 +302,16 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
             className="flex-1 h-11 font-semibold text-sm border-neutral-200 dark:border-neutral-700"
           >
             수정하기
+          </Button>
+        )}
+        {viewMode && (
+          <Button
+            onClick={handleCopy}
+            variant="outline"
+            className="h-11 gap-2 border-neutral-200 dark:border-neutral-700 text-sm font-medium"
+          >
+            {copied ? <CheckCheck size={15} className="text-green-500" /> : <Copy size={15} />}
+            {copied ? '복사됨!' : 'Velog 복사'}
           </Button>
         )}
         <Button
