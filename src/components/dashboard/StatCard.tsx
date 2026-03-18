@@ -1,3 +1,6 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 interface StatCardProps {
@@ -7,11 +10,17 @@ interface StatCardProps {
   icon?: ReactNode
   accent?: string
   iconBg?: string
+  index?: number
 }
 
-export function StatCard({ label, value, subLabel, icon, accent = 'text-white', iconBg = 'bg-neutral-100 dark:bg-neutral-800' }: StatCardProps) {
+export function StatCard({ label, value, subLabel, icon, accent = 'text-white', iconBg = 'bg-neutral-100 dark:bg-neutral-800', index = 0 }: StatCardProps) {
   return (
-    <div className="rounded-xl border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm p-4 flex flex-col gap-3">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.07, ease: 'easeOut' }}
+      className="rounded-xl border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm p-4 flex flex-col gap-3"
+    >
       {icon && (
         <div className={`w-8 h-8 rounded-full ${iconBg} flex items-center justify-center ${accent}`}>
           {icon}
@@ -22,6 +31,6 @@ export function StatCard({ label, value, subLabel, icon, accent = 'text-white', 
         <p className={`text-2xl font-bold tracking-tight ${accent}`}>{value}</p>
         {subLabel && <p className="text-xs text-neutral-400 dark:text-neutral-600 mt-0.5">{subLabel}</p>}
       </div>
-    </div>
+    </motion.div>
   )
 }

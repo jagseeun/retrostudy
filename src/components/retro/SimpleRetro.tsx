@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
@@ -135,14 +136,18 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
       {/* 체크 항목 */}
       {items.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          {items.map((item) => {
+          {items.map((item, i) => {
             const isToggling = togglingId === item.id
             return (
-              <button
+              <motion.button
                 key={item.id}
                 type="button"
                 onClick={() => toggleItem(item)}
                 disabled={!isEditable || !!togglingId}
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, delay: i * 0.04, ease: 'easeOut' }}
+                whileTap={isEditable ? { scale: 0.98 } : {}}
                 className={cn(
                   'flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border shadow-sm text-left transition-all w-full',
                   item.checked
@@ -153,26 +158,40 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
                   !isEditable && 'cursor-default'
                 )}
               >
-                <div className={cn(
-                  'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
-                  item.checked ? 'bg-green-500' : 'border-2 border-neutral-300 dark:border-neutral-600'
-                )}>
+                <motion.div
+                  animate={item.checked ? { scale: [1, 1.3, 1], backgroundColor: '#22c55e' } : { scale: 1 }}
+                  transition={{ duration: 0.25 }}
+                  className={cn(
+                    'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
+                    item.checked ? 'bg-green-500' : 'border-2 border-neutral-300 dark:border-neutral-600'
+                  )}
+                >
                   {isToggling ? (
                     <Loader2 size={8} className="animate-spin text-white" />
                   ) : item.checked ? (
                     <Check size={9} className="text-white" />
                   ) : null}
-                </div>
+                </motion.div>
                 <span className={cn(
                   'text-sm flex-1 font-medium',
                   item.checked ? 'text-green-700 dark:text-green-300' : 'text-neutral-500 dark:text-neutral-500'
                 )}>
                   {item.title}
                 </span>
-                {item.checked && !isToggling && (
-                  <span className="text-xs font-semibold text-green-500 shrink-0">완료</span>
-                )}
-              </button>
+                <AnimatePresence>
+                  {item.checked && !isToggling && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.7 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.7 }}
+                      transition={{ duration: 0.15 }}
+                      className="text-xs font-semibold text-green-500 shrink-0"
+                    >
+                      완료
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
             )
           })}
         </div>

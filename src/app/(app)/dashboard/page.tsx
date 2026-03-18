@@ -130,6 +130,7 @@ export default async function DashboardPage() {
           icon={<Flame size={15} />}
           accent="text-orange-400"
           iconBg="bg-orange-50 dark:bg-orange-950/40"
+          index={0}
         />
         <StatCard
           label="평균 완료율"
@@ -137,6 +138,7 @@ export default async function DashboardPage() {
           icon={<TrendingUp size={15} />}
           accent="text-green-500"
           iconBg="bg-green-50 dark:bg-green-950/40"
+          index={1}
         />
         <StatCard
           label="총 회고"
@@ -144,6 +146,7 @@ export default async function DashboardPage() {
           icon={<BookOpen size={15} />}
           accent="text-blue-500"
           iconBg="bg-blue-50 dark:bg-blue-950/40"
+          index={2}
         />
       </div>
 

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AppNav } from '@/components/shared/AppNav'
 import { WeekStartPrompt } from '@/components/plan/WeekStartPrompt'
+import { PageTransition } from '@/components/shared/PageTransition'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -15,7 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <AppNav />
       <main className="flex-1 min-w-0 pb-20 md:pb-0 md:pl-56">
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
       <WeekStartPrompt />
     </div>
