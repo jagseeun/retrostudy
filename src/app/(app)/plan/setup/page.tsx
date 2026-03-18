@@ -1,7 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { WeeklySetup } from '@/components/plan/WeeklySetup'
 import { QuickWeeklySetup } from '@/components/plan/QuickWeeklySetup'
@@ -9,7 +7,7 @@ import type { WeeklyScheduleItem } from '@/lib/types/app.types'
 
 export default function PlanSetupPage() {
   const [items, setItems] = useState<WeeklyScheduleItem[]>([])
-  const [mode, setMode] = useState<'quick' | 'detail'>('quick')
+  const [mode, setMode] = useState<'quick' | 'detail'>('detail')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -21,14 +19,7 @@ export default function PlanSetupPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Link
-          href="/plan"
-          className="flex items-center gap-1 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-        >
-          <ChevronLeft size={14} />
-          계획
-        </Link>
+      <div className="mb-2">
         <h1 className="text-xl font-bold text-neutral-900 dark:text-white">주간 일정 설정</h1>
       </div>
 

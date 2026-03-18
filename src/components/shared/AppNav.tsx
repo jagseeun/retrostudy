@@ -5,12 +5,13 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, CalendarCheck2, BookOpen, History, Moon, Sun, LogOut } from 'lucide-react'
+import { LayoutDashboard, CalendarCheck2, BookOpen, History, Moon, Sun, LogOut, Settings2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
   { href: '/plan', label: '계획', icon: CalendarCheck2 },
+  { href: '/plan/setup', label: '주간 일정 설정', icon: Settings2, sub: true },
   { href: '/retro', label: '회고', icon: BookOpen },
   { href: '/history', label: '히스토리', icon: History },
 ]
@@ -57,24 +58,25 @@ export function AppNav() {
         {/* 섹션 레이블 */}
         <p className="px-3 mb-1 text-[10px] uppercase tracking-widest font-semibold text-neutral-400 dark:text-neutral-600">메뉴</p>
 
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const active = pathname.startsWith(href.split('/').slice(0, 2).join('/'))
+        {navItems.map(({ href, label, icon: Icon, sub }) => {
+          const active = sub ? pathname === href : pathname.startsWith(href.split('/').slice(0, 2).join('/')) && !(sub === undefined && pathname === '/plan/setup')
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                'relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                'relative flex items-center gap-3 rounded-lg text-sm font-medium transition-colors',
+                sub ? 'ml-4 px-3 py-1.5' : 'px-3 py-2.5',
                 active
                   ? 'bg-neutral-100 dark:bg-neutral-800/80 text-neutral-900 dark:text-white'
                   : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
               )}
             >
-              {active && (
+              {active && !sub && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-blue-500 rounded-r-full" />
               )}
-              <Icon size={16} className={active ? 'text-blue-500' : ''} />
-              {label}
+              <Icon size={sub ? 13 : 16} className={active ? 'text-blue-500' : ''} />
+              <span className={sub ? 'text-xs' : ''}>{label}</span>
             </Link>
           )
         })}
