@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, CalendarCheck2, BookOpen, History, Moon, Sun } from 'lucide-react'
+import { LayoutDashboard, CalendarCheck2, BookOpen, History, Moon, Sun, LogOut } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
@@ -16,12 +17,19 @@ const navItems = [
 
 export function AppNav() {
   const pathname = usePathname()
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   return (
     <>
@@ -70,6 +78,16 @@ export function AppNav() {
             </Link>
           )
         })}
+
+        <div className="mt-auto pt-4">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+          >
+            <LogOut size={16} />
+            로그아웃
+          </button>
+        </div>
       </nav>
 
       {/* Mobile bottom nav */}
@@ -103,6 +121,14 @@ export function AppNav() {
             theme === 'dark' ? <Sun size={20} strokeWidth={1.8} /> : <Moon size={20} strokeWidth={1.8} />
           ) : <Moon size={20} strokeWidth={1.8} />}
           <span>테마</span>
+        </button>
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center gap-1 py-3 text-xs font-medium min-h-[56px] justify-center px-3 text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400"
+          aria-label="로그아웃"
+        >
+          <LogOut size={20} strokeWidth={1.8} />
+          <span>로그아웃</span>
         </button>
       </nav>
     </>
