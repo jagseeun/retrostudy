@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -8,6 +8,12 @@ import { BookOpen } from 'lucide-react'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const handlePageShow = () => setLoading(false)
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   const handleGoogleLogin = async () => {
     setLoading(true)
