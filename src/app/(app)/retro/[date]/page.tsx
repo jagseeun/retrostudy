@@ -51,16 +51,10 @@ export default async function RetroDatePage({ params }: Props) {
     )
   }
 
-  // 체크 항목 조회
-  const checkItems = await syncAndGetDailyChecks(supabase, user.id, date, dow)
-
-  // 회고 조회
-  const { data: retro } = await supabase
-    .from('daily_retros')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', date)
-    .single()
+  const [checkItems, { data: retro }] = await Promise.all([
+    syncAndGetDailyChecks(supabase, user.id, date, dow),
+    supabase.from('daily_retros').select('*').eq('user_id', user.id).eq('date', date).single(),
+  ])
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">

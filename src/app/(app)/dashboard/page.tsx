@@ -35,18 +35,10 @@ export default async function DashboardPage() {
 
   const today = toDateString(new Date())
 
-  // 회고 목록 (전체, 날짜 제한 없음)
-  const { data: retros } = await supabase
-    .from('daily_retros')
-    .select('date, feedback')
-    .eq('user_id', user.id)
-    .order('date', { ascending: false })
-
-  // 체크 현황 (완료율 계산용, 전체)
-  const { data: checks } = await supabase
-    .from('daily_check_items')
-    .select('date, checked')
-    .eq('user_id', user.id)
+  const [{ data: retros }, { data: checks }] = await Promise.all([
+    supabase.from('daily_retros').select('date, feedback').eq('user_id', user.id).order('date', { ascending: false }),
+    supabase.from('daily_check_items').select('date, checked').eq('user_id', user.id),
+  ])
 
   // 날짜별 완료율 계산
   const checkMap = new Map<string, { total: number; checked: number }>()
