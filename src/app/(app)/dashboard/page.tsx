@@ -4,7 +4,7 @@ import { StatCard } from '@/components/dashboard/StatCard'
 import { StreakHeatmap } from '@/components/dashboard/StreakHeatmap'
 import { MonthlyWeekPlanner } from '@/components/dashboard/MonthlyWeekPlanner'
 import { generateDateRange, toDateString } from '@/lib/utils/date'
-import { Flame, BookOpen, TrendingUp } from 'lucide-react'
+import { Flame, BookOpen, TrendingUp, CalendarCheck2, ArrowRight } from 'lucide-react'
 import type { HeatmapEntry } from '@/lib/types/app.types'
 
 export const revalidate = 60
@@ -88,12 +88,47 @@ export default async function DashboardPage() {
   // 최근 회고 5개
   const recentRetros = (retros ?? []).slice(0, 5)
 
+  const isNewUser = totalRetros === 0
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 md:py-8 space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">대시보드</h1>
-        <p className="text-sm text-neutral-400 mt-1">총 {totalRetros}개의 회고가 쌓였어요</p>
+        <p className="text-sm text-neutral-400 mt-1">
+          {isNewUser ? '환영해요! 아래 순서대로 시작해보세요.' : `총 ${totalRetros}개의 회고가 쌓였어요`}
+        </p>
       </div>
+
+      {/* 신규 사용자 온보딩 */}
+      {isNewUser && (
+        <div className="rounded-xl border border-blue-100 dark:border-blue-900/30 bg-blue-50/60 dark:bg-blue-950/20 p-5">
+          <p className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-4">시작하기</p>
+          <ol className="space-y-3">
+            {[
+              { step: 1, label: '주간 일정 설정', desc: '공부할 과목·시간대를 요일별로 등록해요', href: '/plan/setup' },
+              { step: 2, label: '오늘 회고 작성', desc: '완료한 항목 체크 후 한 줄 피드백을 남겨요', href: `/retro/${today}` },
+              { step: 3, label: '꾸준히 기록하기', desc: '매일 쌓인 기록이 히트맵에 나타나요', href: null },
+            ].map(({ step, label, desc, href }) => (
+              <li key={step} className="flex items-start gap-3">
+                <span className="shrink-0 w-5 h-5 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center mt-0.5">
+                  {step}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">{label}</span>
+                    {href && (
+                      <Link href={href} className="inline-flex items-center gap-0.5 text-xs text-blue-500 hover:text-blue-400 font-medium">
+                        바로가기 <ArrowRight size={11} />
+                      </Link>
+                    )}
+                  </div>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">

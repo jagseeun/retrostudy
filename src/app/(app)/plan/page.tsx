@@ -153,14 +153,18 @@ export default async function PlanPage() {
 
       {/* 처음 사용 안내 */}
       {(scheduleItems ?? []).length === 0 && (
-        <div className="mt-6 p-5 rounded-xl border border-dashed border-neutral-200 dark:border-neutral-700 text-center">
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">아직 주간 일정이 없어요</p>
+        <div className="mt-4 p-6 rounded-xl border-2 border-dashed border-blue-200 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-950/10 text-center">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 mb-3">
+            <Settings2 size={18} className="text-blue-500" />
+          </div>
+          <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-200 mb-1">주간 일정이 없어요</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-4">요일별 공부 계획을 등록하면 매일 자동으로 체크리스트가 만들어져요.</p>
           <Link
             href="/plan/setup"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-500 hover:text-blue-400"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-400 px-4 py-2 rounded-lg transition-colors"
           >
             <Settings2 size={13} />
-            주간 일정 설정하러 가기
+            지금 설정하기
           </Link>
         </div>
       )}

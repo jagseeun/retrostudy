@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { LayoutDashboard, CalendarCheck2, BookOpen, History, Moon, Sun, LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 
 const navItems = [
   { href: '/dashboard', label: '대시보드', icon: LayoutDashboard },
@@ -20,8 +21,21 @@ export function AppNav() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [userInfo, setUserInfo] = useState<{ name: string; email: string; avatar: string | null } | null>(null)
 
   useEffect(() => setMounted(true), [])
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      setUserInfo({
+        name: user.user_metadata?.full_name ?? user.user_metadata?.name ?? '',
+        email: user.email ?? '',
+        avatar: user.user_metadata?.avatar_url ?? null,
+      })
+    })
+  }, [])
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
@@ -79,7 +93,22 @@ export function AppNav() {
           )
         })}
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 space-y-1">
+          {userInfo && (
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/60">
+              {userInfo.avatar ? (
+                <Image src={userInfo.avatar} alt="" width={28} height={28} className="w-7 h-7 rounded-full shrink-0" />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 text-xs font-bold text-blue-500">
+                  {userInfo.name.charAt(0) || userInfo.email.charAt(0)}
+                </div>
+              )}
+              <div className="min-w-0">
+                {userInfo.name && <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-200 truncate">{userInfo.name}</p>}
+                <p className="text-[11px] text-neutral-400 dark:text-neutral-500 truncate">{userInfo.email}</p>
+              </div>
+            </div>
+          )}
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
