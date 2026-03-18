@@ -73,7 +73,6 @@ export function QuickWeeklySetup({ initialItems }: Props) {
 
   const handleSave = async () => {
     setSaving(true)
-    setSaved(false)
     try {
       // 기존 항목 전부 삭제
       await Promise.all(items.map(item =>
