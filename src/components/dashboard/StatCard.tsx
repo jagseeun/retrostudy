@@ -16,9 +16,9 @@ interface StatCardProps {
 export function StatCard({ label, value, subLabel, icon, accent = 'text-white', iconBg = 'bg-neutral-100 dark:bg-neutral-800', index = 0 }: StatCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.07, ease: 'easeOut' }}
+      transition={{ duration: 0.4, delay: index * 0.12, ease: 'easeOut' }}
       className="rounded-xl border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm p-4 flex flex-col gap-3"
     >
       {icon && (

@@ -144,9 +144,9 @@ export function SimpleRetro({ date, checkItems: initialCheckItems, initialRetro 
                 type="button"
                 onClick={() => toggleItem(item)}
                 disabled={!isEditable || !!togglingId}
-                initial={{ opacity: 0, x: -6 }}
+                initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: i * 0.04, ease: 'easeOut' }}
+                transition={{ duration: 0.3, delay: i * 0.07, ease: 'easeOut' }}
                 whileTap={isEditable ? { scale: 0.98 } : {}}
                 className={cn(
                   'flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border shadow-sm text-left transition-all w-full',
