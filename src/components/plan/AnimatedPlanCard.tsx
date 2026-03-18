@@ -27,9 +27,9 @@ interface Props {
 export function AnimatedPlanCard({ date, index, isToday, isSat, isSun, dayLabel, dayItems, todayChecked, todayTotal }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
+      initial={{ opacity: 0, x: 24 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: 'spring', stiffness: 280, damping: 24, delay: index * 0.05 }}
     >
       <Link
         href={`/plan/${date}`}
