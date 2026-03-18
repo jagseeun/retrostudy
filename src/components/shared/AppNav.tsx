@@ -34,7 +34,7 @@ export function AppNav() {
   return (
     <>
       {/* Desktop sidebar */}
-      <nav className="hidden md:flex flex-col w-56 min-h-screen bg-white dark:bg-neutral-950 border-r border-neutral-100 dark:border-neutral-800/80 px-3 py-6 gap-0.5">
+      <nav className="hidden md:flex flex-col fixed left-0 top-0 w-56 h-screen bg-white dark:bg-neutral-950 border-r border-neutral-100 dark:border-neutral-800/80 px-3 py-6 gap-0.5 z-40 overflow-y-auto">
         {/* 로고 */}
         <div className="px-3 mb-7 flex items-center justify-between">
           <div className="flex items-center gap-2">
