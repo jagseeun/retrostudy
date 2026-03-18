@@ -10,33 +10,38 @@ interface Props {
   initialItems: WeeklyScheduleItem[]
 }
 
+function padTime(t: string): string {
+  const [h, m] = t.split(':')
+  return h.padStart(2, '0') + ':' + (m ?? '00').padStart(2, '0') + ':00'
+}
+
 function parseLine(line: string): { start_time: string | null; end_time: string | null; title: string } | null {
   const trimmed = line.trim()
   if (!trimmed) return null
 
-  // HH:MM-HH:MM, title
-  const rangeMatch = trimmed.match(/^(\d{1,2}:\d{2})-(\d{1,2}:\d{2})[,\s]+(.+)$/)
+  // 시간 범위 패턴: HH:MM[-~]HH:MM (앞뒤 공백, 콤마 무관, 순서 무관)
+  const rangeMatch = trimmed.match(/(\d{1,2}:\d{2})\s*[-~]\s*(\d{1,2}:\d{2})/)
   if (rangeMatch) {
-    const pad = (t: string) => t.length === 4 ? '0' + t : t
+    const title = trimmed.replace(rangeMatch[0], '').replace(/^[,\s]+|[,\s]+$/g, '').trim()
     return {
-      start_time: pad(rangeMatch[1]) + ':00',
-      end_time: pad(rangeMatch[2]) + ':00',
-      title: rangeMatch[3].trim(),
+      start_time: padTime(rangeMatch[1]),
+      end_time: padTime(rangeMatch[2]),
+      title: title || trimmed,
     }
   }
 
-  // HH:MM, title
-  const timeMatch = trimmed.match(/^(\d{1,2}:\d{2})[,\s]+(.+)$/)
+  // 시간만: HH:MM
+  const timeMatch = trimmed.match(/(\d{1,2}:\d{2})/)
   if (timeMatch) {
-    const pad = (t: string) => t.length === 4 ? '0' + t : t
+    const title = trimmed.replace(timeMatch[0], '').replace(/^[,\s]+|[,\s]+$/g, '').trim()
     return {
-      start_time: pad(timeMatch[1]) + ':00',
+      start_time: padTime(timeMatch[1]),
       end_time: null,
-      title: timeMatch[2].trim(),
+      title: title || trimmed,
     }
   }
 
-  // title only
+  // 제목만
   return { start_time: null, end_time: null, title: trimmed }
 }
 
