@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -27,6 +27,7 @@ const PAGE_SIZE = 20
 export function HistoryContent({ startDate }: HistoryContentProps) {
   const router = useRouter()
   const today = todayString()
+  const dateInputRef = useRef<HTMLInputElement>(null)
 
   const [retros, setRetros] = useState<RetroItem[]>([])
   const [page, setPage] = useState(1)
@@ -67,17 +68,21 @@ export function HistoryContent({ startDate }: HistoryContentProps) {
         </div>
 
         {/* 날짜 선택 */}
-        <div className="relative">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-3 py-1.5 rounded-lg transition-colors cursor-pointer select-none">
+        <div>
+          <button
+            onClick={() => dateInputRef.current?.showPicker()}
+            className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-3 py-1.5 rounded-lg transition-colors"
+          >
             <CalendarDays size={13} />
             날짜 선택
-          </div>
+          </button>
           <input
+            ref={dateInputRef}
             type="date"
             min={startDate}
             max={today}
             onChange={(e) => { if (e.target.value) router.push(`/retro/${e.target.value}`) }}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            className="w-0 h-0 opacity-0 absolute"
           />
         </div>
       </div>
