@@ -104,7 +104,7 @@ export function QuickWeeklySetup({ initialItems }: Props) {
       }
       const newItems = await Promise.all(requests)
       setItems(newItems)
-      router.push('/plan')
+      router.push('/retro')
     } finally {
       setSaving(false)
     }
