@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { StatCard } from '@/components/dashboard/StatCard'
 import { StreakHeatmap } from '@/components/dashboard/StreakHeatmap'
-import { generateHeatmapDates, generateDateRange, toDateString } from '@/lib/utils/date'
+import { MonthlyWeekPlanner } from '@/components/dashboard/MonthlyWeekPlanner'
+import { generateDateRange, toDateString } from '@/lib/utils/date'
 import { Flame, BookOpen, TrendingUp } from 'lucide-react'
 import type { HeatmapEntry } from '@/lib/types/app.types'
 
@@ -59,10 +60,9 @@ export default async function DashboardPage() {
 
   const retroDates = new Set((retros ?? []).map((r) => r.date))
 
-  // 히트맵 범위: 첫 회고 날짜 ~ 오늘 (없으면 최근 30일)
-  const allRetroDatesAsc = [...retroDates].sort()
-  const firstRetroDate = allRetroDatesAsc[0] ?? toDateString(new Date(Date.now() - 30 * 86400000))
-  const heatmapDates = generateDateRange(firstRetroDate, today)
+  // 히트맵 범위: 가입일 ~ 오늘
+  const joinedAt = user.created_at ? toDateString(new Date(user.created_at)) : today
+  const heatmapDates = generateDateRange(joinedAt, today)
 
   // 히트맵 데이터
   const heatmapData: Record<string, HeatmapEntry> = {}
@@ -119,6 +119,9 @@ export default async function DashboardPage() {
           iconBg="bg-blue-50 dark:bg-blue-950/40"
         />
       </div>
+
+      {/* 주간 계획 */}
+      <MonthlyWeekPlanner />
 
       {/* Heatmap */}
       <div className="rounded-xl border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm p-5">
