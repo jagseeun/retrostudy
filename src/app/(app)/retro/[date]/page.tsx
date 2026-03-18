@@ -21,10 +21,14 @@ export default async function RetroDatePage({ params }: Props) {
   const today = todayString()
   const startDate = user.created_at.slice(0, 10)
 
-  // 시작 날짜 이전으로 접근 시 시작 날짜로 이동
-  if (date < startDate) {
-    redirect(`/retro/${startDate}`)
+  // 날짜 형식 검증
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isNaN(Date.parse(date))) {
+    redirect(`/retro/${today}`)
   }
+
+  // 시작 날짜 이전 또는 미래 날짜 접근 시 리디렉트
+  if (date < startDate) redirect(`/retro/${startDate}`)
+  if (date > today) redirect(`/retro/${today}`)
 
   const dow = getDayOfWeek(date)
 
