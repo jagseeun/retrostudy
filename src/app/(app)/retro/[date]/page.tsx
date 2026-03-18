@@ -1,6 +1,4 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { SimpleRetro } from '@/components/retro/SimpleRetro'
 import { RetroDateNav } from '@/components/retro/RetroDateNav'
@@ -63,14 +61,11 @@ export default async function RetroDatePage({ params }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 md:py-8">
       {/* 헤더 */}
-      <div className="flex flex-col gap-4 mb-8">
-        <Link
-          href="/retro"
-          className="flex items-center gap-1 text-sm font-medium text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors w-fit"
-        >
-          <ChevronLeft size={14} />
-          회고
-        </Link>
+      <div className="flex flex-col gap-5 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">회고</h1>
+          <p className="text-sm text-neutral-400 mt-0.5">오늘 하루를 돌아보세요</p>
+        </div>
         <div className="flex justify-center">
           <RetroDateNav date={date} startDate={startDate} today={today} />
         </div>
