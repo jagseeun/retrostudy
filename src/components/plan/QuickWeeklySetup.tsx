@@ -79,28 +79,29 @@ export function QuickWeeklySetup({ initialItems }: Props) {
         fetch(`/api/weekly-schedule/${item.id}`, { method: 'DELETE' })
       ))
 
-      // 새 항목 생성
-      const newItems: WeeklyScheduleItem[] = []
+      // 새 항목 생성 (전체 병렬)
+      const requests: Promise<WeeklyScheduleItem>[] = []
       for (let dow = 0; dow < 7; dow++) {
         const lines = (texts[dow] ?? '').split('\n').filter(l => l.trim())
-        for (let i = 0; i < lines.length; i++) {
-          const parsed = parseLine(lines[i])
-          if (!parsed) continue
-          const res = await fetch('/api/weekly-schedule', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              day_of_week: dow,
-              title: parsed.title,
-              start_time: parsed.start_time,
-              end_time: parsed.end_time,
-              sort_order: i,
-            }),
-          })
-          const created = await res.json()
-          newItems.push(created)
-        }
+        lines.forEach((line, i) => {
+          const parsed = parseLine(line)
+          if (!parsed) return
+          requests.push(
+            fetch('/api/weekly-schedule', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                day_of_week: dow,
+                title: parsed.title,
+                start_time: parsed.start_time,
+                end_time: parsed.end_time,
+                sort_order: i,
+              }),
+            }).then(r => r.json())
+          )
+        })
       }
+      const newItems = await Promise.all(requests)
       setItems(newItems)
       // 저장 후 텍스트 정규화 (파싱된 결과로 재포맷)
       setTexts(initTexts(newItems))
